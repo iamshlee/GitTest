@@ -36,9 +36,9 @@ export default function CompanyCard({
               {c.name}
             </p>
             <span className="shrink-0 text-[11px] font-medium text-toss-gray">
-              {c.symbol}
+              {c.private ? "비상장" : c.symbol}
             </span>
-            {quote?.live && (
+            {!c.private && quote?.live && (
               <span className="ml-0.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-up" />
             )}
           </div>
@@ -49,12 +49,29 @@ export default function CompanyCard({
 
       <div className="mt-3 flex items-end justify-between">
         <div>
-          <p className="tnum text-[17px] font-bold text-toss-ink">
-            {usd(price)}
-          </p>
-          <p className={`tnum text-[13px] font-semibold ${changeColor(change)}`}>
-            {pct(change)}
-          </p>
+          {c.private ? (
+            <>
+              <p className="tnum text-[17px] font-bold text-toss-ink">
+                {usdB(c.marketCap)}
+              </p>
+              <p className="text-[13px] font-semibold text-toss-gray">
+                밸류에이션
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="tnum text-[17px] font-bold text-toss-ink">
+                {usd(price)}
+              </p>
+              <p
+                className={`tnum text-[13px] font-semibold ${changeColor(
+                  change
+                )}`}
+              >
+                {pct(change)}
+              </p>
+            </>
+          )}
         </div>
         <Sparkline data={spark} color={c.color} />
       </div>

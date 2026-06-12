@@ -2,21 +2,21 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getCompany } from "@/lib/data";
+import { getCompany, Metric, METRIC_META } from "@/lib/data";
 import { useQuotes } from "@/lib/useQuotes";
 import { usd, pct, changeColor, usdB, gw } from "@/lib/format";
 import CompareChart from "@/components/charts/CompareChart";
 import NewsFeed from "@/components/NewsFeed";
 import WatchlistButton from "@/components/WatchlistButton";
 
-type Metric = "backlog" | "capacity";
+const METRICS: Metric[] = ["backlog", "capacity", "revenue"];
 
 export default function CompanyPage() {
   const params = useParams();
   const router = useRouter();
   const symbol = String(params.symbol || "").toUpperCase();
   const c = getCompany(symbol);
-  const { quotes } = useQuotes(c ? [c.symbol] : []);
+  const { quotes } = useQuotes(c && !c.private ? [c.symbol] : []);
   const [metric, setMetric] = useState<Metric>("backlog");
 
   if (!c) {
@@ -56,7 +56,9 @@ export default function CompanyPage() {
             />
           </svg>
         </button>
-        <span className="text-sm font-bold text-toss-ink">{c.symbol}</span>
+        <span className="text-sm font-bold text-toss-ink">
+          {c.private ? "비상장" : c.symbol}
+        </span>
         <WatchlistButton symbol={c.symbol} />
       </div>
 
@@ -77,20 +79,38 @@ export default function CompanyPage() {
           </div>
         </div>
 
-        {/* 가격 */}
+        {/* 가격 / 밸류에이션 */}
         <div className="mt-3 flex items-end gap-2">
-          <span className="tnum text-[28px] font-extrabold text-toss-ink">
-            {usd(price)}
-          </span>
-          <span
-            className={`tnum mb-1 text-[15px] font-bold ${changeColor(change)}`}
-          >
-            {pct(change)}
-          </span>
-          {q?.live && (
-            <span className="mb-1.5 rounded-full bg-up/10 px-2 py-0.5 text-[10px] font-semibold text-up">
-              실시간
-            </span>
+          {c.private ? (
+            <>
+              <span className="tnum text-[28px] font-extrabold text-toss-ink">
+                {usdB(c.marketCap)}
+              </span>
+              <span className="mb-1 text-[15px] font-bold text-toss-gray">
+                밸류에이션
+              </span>
+              <span className="mb-1.5 rounded-full bg-toss-line px-2 py-0.5 text-[10px] font-semibold text-toss-grayd">
+                비상장
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="tnum text-[28px] font-extrabold text-toss-ink">
+                {usd(price)}
+              </span>
+              <span
+                className={`tnum mb-1 text-[15px] font-bold ${changeColor(
+                  change
+                )}`}
+              >
+                {pct(change)}
+              </span>
+              {q?.live && (
+                <span className="mb-1.5 rounded-full bg-up/10 px-2 py-0.5 text-[10px] font-semibold text-up">
+                  실시간
+                </span>
+              )}
+            </>
           )}
         </div>
 
@@ -106,12 +126,46 @@ export default function CompanyPage() {
           ))}
         </div>
 
-        {/* 핵심 지표 */}
+        {/* 핵심 지표 (확장) */}
         <div className="mt-4 grid grid-cols-2 gap-2">
-          <Stat label="시가총액" value={usdB(c.marketCap)} />
-          <Stat label="매출(TTM)" value={usdB(c.revenueTTM)} />
+          <Stat
+            label={c.private ? "밸류에이션" : "시가총액"}
+            value={usdB(c.marketCap)}
+          />
+          <Stat
+            label="매출(TTM)"
+            value={usdB(c.revenueTTM)}
+            sub={`YoY ${pct(c.revenueGrowthYoY)}`}
+            subColor={changeColor(c.revenueGrowthYoY)}
+          />
           <Stat label="수주잔고" value={usdB(c.backlog)} highlight />
-          <Stat label="확보 용량" value={gw(c.powerSecured)} highlight />
+          <Stat
+            label="확보 용량"
+            value={gw(c.powerSecured)}
+            sub={`파이프라인 ${gw(c.powerPipeline)}`}
+            highlight
+          />
+        </div>
+
+        {/* 가동률 게이지 */}
+        <div className="mt-3 rounded-2xl bg-white p-4 shadow-card">
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] font-semibold text-toss-grayd">
+              용량 가동률
+            </span>
+            <span className="tnum text-[15px] font-extrabold text-toss-ink">
+              {c.utilization}%
+            </span>
+          </div>
+          <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-toss-bg">
+            <div
+              className="h-full rounded-full"
+              style={{ width: `${c.utilization}%`, background: c.color }}
+            />
+          </div>
+          {c.arrNote && (
+            <p className="mt-2 text-[12px] text-toss-gray">💡 {c.arrNote}</p>
+          )}
         </div>
 
         {/* 소개 */}
@@ -126,20 +180,20 @@ export default function CompanyPage() {
           </div>
         </section>
 
-        {/* 개별 추이 차트 */}
+        {/* 개별 추이 차트 (3종 토글) */}
         <section className="mt-5">
           <div className="mb-2 flex items-center justify-between px-1">
             <h2 className="text-sm font-bold text-toss-grayd">분기별 추이</h2>
             <div className="flex gap-1 rounded-full bg-white p-0.5 shadow-card">
-              {(["backlog", "capacity"] as Metric[]).map((m) => (
+              {METRICS.map((m) => (
                 <button
                   key={m}
                   onClick={() => setMetric(m)}
-                  className={`press rounded-full px-3 py-1 text-[12px] font-semibold ${
+                  className={`press rounded-full px-2.5 py-1 text-[12px] font-semibold ${
                     metric === m ? "bg-brand text-white" : "text-toss-gray"
                   }`}
                 >
-                  {m === "backlog" ? "수주잔고" : "용량"}
+                  {METRIC_META[m].short}
                 </button>
               ))}
             </div>
@@ -149,11 +203,7 @@ export default function CompanyPage() {
 
         {/* 투자 포인트 */}
         <section className="mt-5 space-y-3">
-          <PointCard
-            title="📈 주가 촉매"
-            items={c.catalysts}
-            color="#F04452"
-          />
+          <PointCard title="📈 주가 촉매" items={c.catalysts} color="#F04452" />
           <PointCard title="⚠️ 리스크" items={c.risks} color="#3182F6" />
         </section>
 
@@ -174,6 +224,27 @@ export default function CompanyPage() {
           </div>
         </section>
 
+        {/* 출처 */}
+        <section className="mt-5">
+          <h2 className="mb-2 px-1 text-sm font-bold text-toss-grayd">
+            데이터 출처
+          </h2>
+          <div className="space-y-2 rounded-2xl bg-white p-3.5 shadow-card">
+            {c.sources.map((s) => (
+              <a
+                key={s.url}
+                href={s.url}
+                target="_blank"
+                rel="noreferrer"
+                className="press flex items-center gap-2 text-[13px] text-brand"
+              >
+                <span>🔗</span>
+                <span className="truncate">{s.label}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
         {/* 관련 뉴스 */}
         <section className="mt-6">
           <h2 className="mb-2 px-1 text-sm font-bold text-toss-grayd">
@@ -189,10 +260,14 @@ export default function CompanyPage() {
 function Stat({
   label,
   value,
+  sub,
+  subColor,
   highlight,
 }: {
   label: string;
   value: string;
+  sub?: string;
+  subColor?: string;
   highlight?: boolean;
 }) {
   return (
@@ -205,6 +280,11 @@ function Stat({
       <p className="tnum mt-0.5 text-[18px] font-extrabold text-toss-ink">
         {value}
       </p>
+      {sub && (
+        <p className={`tnum text-[11px] font-semibold ${subColor || "text-toss-gray"}`}>
+          {sub}
+        </p>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { COMPANIES } from "./data";
+import { COMPANIES, PUBLIC_SYMBOLS } from "./data";
 
 export type LiveQuote = {
   price: number;
@@ -9,10 +9,11 @@ export type LiveQuote = {
   live: boolean; // true=실시간, false=폴백
 };
 
-// 폴백 기본값 (data.ts 기반)
+// 폴백 기본값 (data.ts 기반, 비상장 제외)
 function fallbackMap(): Record<string, LiveQuote> {
   const m: Record<string, LiveQuote> = {};
   for (const c of COMPANIES) {
+    if (c.private) continue;
     m[c.symbol] = {
       price: c.fallbackPrice,
       changePct: c.fallbackChangePct,
@@ -29,12 +30,17 @@ export function useQuotes(symbols: string[]) {
   const [live, setLive] = useState(false);
 
   useEffect(() => {
-    if (!symbols.length) return;
+    // 상장사만 실시간 조회 (비상장 제외)
+    const pub = symbols.filter((s) => PUBLIC_SYMBOLS.includes(s));
+    if (!pub.length) {
+      setLoading(false);
+      return;
+    }
     let alive = true;
 
     async function load() {
       try {
-        const res = await fetch(`/api/quote?symbols=${symbols.join(",")}`);
+        const res = await fetch(`/api/quote?symbols=${pub.join(",")}`);
         const json = await res.json();
         if (!alive) return;
         if (json?.quotes && Object.keys(json.quotes).length) {

@@ -12,6 +12,11 @@ export function gw(v: number): string {
   return `${v.toFixed(v < 1 ? 2 : 1)}GW`;
 }
 
+// 단위(METRIC_META.unit) 기준 포맷
+export function fmtByUnit(v: number, unit: "$B" | "GW"): string {
+  return unit === "GW" ? gw(v) : usdB(v);
+}
+
 export function usd(v: number): string {
   return v.toLocaleString("en-US", {
     style: "currency",

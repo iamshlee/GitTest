@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { COMPANIES, SYMBOLS } from "@/lib/data";
+import { COMPANIES, PUBLIC_SYMBOLS } from "@/lib/data";
 import { useWatchlist } from "@/lib/watchlist";
 import { useQuotes } from "@/lib/useQuotes";
 import CompanyCard from "@/components/CompanyCard";
 
 export default function WatchlistPage() {
   const { list } = useWatchlist();
-  const { quotes } = useQuotes(SYMBOLS);
+  const { quotes } = useQuotes(PUBLIC_SYMBOLS);
 
   const items = COMPANIES.filter((c) => list.includes(c.symbol));
 

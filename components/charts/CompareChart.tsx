@@ -9,9 +9,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { Company } from "@/lib/data";
-
-type Metric = "backlog" | "capacity";
+import { Company, Metric, metricHistory, METRIC_META } from "@/lib/data";
 
 export default function CompareChart({
   companies,
@@ -28,23 +26,16 @@ export default function CompareChart({
     );
   }
 
-  // 분기 라벨 기준으로 행 병합
-  const labels =
-    metric === "backlog"
-      ? companies[0].backlogHistory.map((p) => p.t)
-      : companies[0].capacityHistory.map((p) => p.t);
+  const unit = METRIC_META[metric].unit;
+  const labels = metricHistory(companies[0], metric).map((p) => p.t);
 
   const rows = labels.map((t, i) => {
     const row: Record<string, number | string> = { t };
     for (const c of companies) {
-      const hist =
-        metric === "backlog" ? c.backlogHistory : c.capacityHistory;
-      row[c.symbol] = hist[i]?.v ?? 0;
+      row[c.symbol] = metricHistory(c, metric)[i]?.v ?? 0;
     }
     return row;
   });
-
-  const unit = metric === "backlog" ? "$B" : "GW";
 
   return (
     <div className="rounded-2xl bg-white p-3 pt-4 shadow-card">
@@ -62,7 +53,6 @@ export default function CompareChart({
             tickLine={false}
             axisLine={false}
             width={42}
-            tickFormatter={(v) => `${v}${unit === "$B" ? "" : ""}`}
           />
           <Tooltip
             contentStyle={{
@@ -71,10 +61,7 @@ export default function CompareChart({
               fontSize: 12,
               boxShadow: "0 6px 24px rgba(0,0,0,0.08)",
             }}
-            formatter={(value: any, name: any) => [
-              `${value}${unit}`,
-              name,
-            ]}
+            formatter={(value: any, name: any) => [`${value}${unit}`, name]}
           />
           {companies.map((c) => (
             <Line

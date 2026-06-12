@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { COMPANIES } from "@/lib/data";
-import { usdB, gw } from "@/lib/format";
+import {
+  COMPANIES,
+  Metric,
+  METRIC_META,
+  metricValue,
+} from "@/lib/data";
+import { fmtByUnit } from "@/lib/format";
 import CompareChart from "@/components/charts/CompareChart";
 
-type Metric = "backlog" | "capacity";
+const METRICS: Metric[] = ["backlog", "capacity", "revenue"];
 
 export default function ComparePage() {
   const [metric, setMetric] = useState<Metric>("backlog");
@@ -14,46 +19,43 @@ export default function ComparePage() {
   );
 
   const chosen = COMPANIES.filter((c) => selected.includes(c.symbol));
+  const meta = METRIC_META[metric];
 
   const toggle = (sym: string) =>
     setSelected((cur) =>
       cur.includes(sym) ? cur.filter((s) => s !== sym) : [...cur, sym]
     );
 
-  // 현재값 기준 랭킹
-  const ranked = [...chosen].sort((a, b) =>
-    metric === "backlog"
-      ? b.backlog - a.backlog
-      : b.powerSecured - a.powerSecured
+  const ranked = [...chosen].sort(
+    (a, b) => metricValue(b, metric) - metricValue(a, metric)
   );
-  const maxVal =
-    ranked.length > 0
-      ? metric === "backlog"
-        ? ranked[0].backlog
-        : ranked[0].powerSecured
-      : 1;
+  const maxVal = ranked.length ? metricValue(ranked[0], metric) : 1;
 
   return (
     <main className="px-4 pt-3">
       <header className="py-2">
         <h1 className="text-[22px] font-extrabold text-toss-ink">비교</h1>
         <p className="text-xs text-toss-gray">
-          시간(X) 대비 {metric === "backlog" ? "수주잔고" : "확보 용량"}(Y) 추이
+          시간(X) 대비 {meta.label}(Y) 추이를 겹쳐 보기
         </p>
       </header>
 
-      {/* 지표 토글 */}
-      <div className="mt-2 grid grid-cols-2 gap-2 rounded-2xl bg-white p-1 shadow-card">
-        <ToggleBtn
-          active={metric === "backlog"}
-          onClick={() => setMetric("backlog")}
-          label="수주잔고 ($B)"
-        />
-        <ToggleBtn
-          active={metric === "capacity"}
-          onClick={() => setMetric("capacity")}
-          label="확보 용량 (GW)"
-        />
+      {/* 지표 토글 (3종) */}
+      <div className="mt-2 grid grid-cols-3 gap-1 rounded-2xl bg-white p-1 shadow-card">
+        {METRICS.map((m) => (
+          <button
+            key={m}
+            onClick={() => setMetric(m)}
+            className={`press rounded-xl py-2.5 text-[13px] font-bold transition ${
+              metric === m ? "bg-brand text-white" : "text-toss-gray"
+            }`}
+          >
+            {METRIC_META[m].label.replace("(TTM)", "")}
+            <span className="ml-1 text-[10px] opacity-70">
+              {METRIC_META[m].unit}
+            </span>
+          </button>
+        ))}
       </div>
 
       {/* 회사 선택 칩 */}
@@ -73,7 +75,7 @@ export default function ComparePage() {
                 className="inline-block h-2 w-2 rounded-full"
                 style={{ background: on ? "#fff" : c.color }}
               />
-              {c.symbol}
+              {c.name}
             </button>
           );
         })}
@@ -87,11 +89,11 @@ export default function ComparePage() {
       {/* 랭킹 바 */}
       <section className="mt-5">
         <h2 className="mb-2 px-1 text-sm font-bold text-toss-grayd">
-          현재 {metric === "backlog" ? "수주잔고" : "확보 용량"} 랭킹
+          현재 {meta.label} 랭킹
         </h2>
         <div className="space-y-2.5 rounded-2xl bg-white p-4 shadow-card">
           {ranked.map((c, i) => {
-            const val = metric === "backlog" ? c.backlog : c.powerSecured;
+            const val = metricValue(c, metric);
             const w = Math.max(6, (val / maxVal) * 100);
             return (
               <div key={c.symbol}>
@@ -99,9 +101,14 @@ export default function ComparePage() {
                   <span className="font-semibold text-toss-ink">
                     <span className="mr-1.5 text-toss-gray">{i + 1}</span>
                     {c.name}
+                    {c.private && (
+                      <span className="ml-1.5 text-[10px] text-toss-gray">
+                        비상장
+                      </span>
+                    )}
                   </span>
                   <span className="tnum font-bold text-toss-ink">
-                    {metric === "backlog" ? usdB(val) : gw(val)}
+                    {fmtByUnit(val, meta.unit)}
                   </span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-toss-bg">
@@ -122,30 +129,9 @@ export default function ComparePage() {
       </section>
 
       <p className="mt-4 px-1 pb-2 text-[11px] leading-relaxed text-toss-gray">
-        ※ 분기별 수주잔고·확보용량은 실적발표/공시 기반 큐레이션 값으로, 실제와
+        ※ 분기별 수주잔고·용량·매출은 실적발표/공시 기반 큐레이션 값으로, 실제와
         차이가 있을 수 있습니다.
       </p>
     </main>
-  );
-}
-
-function ToggleBtn({
-  active,
-  onClick,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`press rounded-xl py-2.5 text-[13px] font-bold transition ${
-        active ? "bg-brand text-white" : "text-toss-gray"
-      }`}
-    >
-      {label}
-    </button>
   );
 }

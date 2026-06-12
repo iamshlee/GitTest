@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { COMPANIES, SYMBOLS, DATA_AS_OF } from "@/lib/data";
+import { COMPANIES, PUBLIC_SYMBOLS, DATA_AS_OF } from "@/lib/data";
 import { useQuotes } from "@/lib/useQuotes";
-import { usdB, gw, pct, changeColor } from "@/lib/format";
+import { usdB, gw, pct } from "@/lib/format";
 import CompanyCard from "@/components/CompanyCard";
+import MoverAlerts from "@/components/MoverAlerts";
 
 type Sort = "change" | "backlog" | "capacity";
 
@@ -15,14 +16,14 @@ const SORTS: { key: Sort; label: string }[] = [
 ];
 
 export default function HomePage() {
-  const { quotes, live } = useQuotes(SYMBOLS);
+  const { quotes, live } = useQuotes(PUBLIC_SYMBOLS);
   const [sort, setSort] = useState<Sort>("backlog");
 
   const totalBacklog = COMPANIES.reduce((s, c) => s + c.backlog, 0);
   const totalGW = COMPANIES.reduce((s, c) => s + c.powerSecured, 0);
   const avgChange =
-    SYMBOLS.reduce((s, sym) => s + (quotes[sym]?.changePct ?? 0), 0) /
-    SYMBOLS.length;
+    PUBLIC_SYMBOLS.reduce((s, sym) => s + (quotes[sym]?.changePct ?? 0), 0) /
+    PUBLIC_SYMBOLS.length;
 
   const sorted = useMemo(() => {
     const arr = [...COMPANIES];
@@ -82,6 +83,9 @@ export default function HomePage() {
           />
         </div>
       </section>
+
+      {/* 급등락 알림 */}
+      <MoverAlerts quotes={quotes} />
 
       {/* 정렬 칩 */}
       <div className="no-scrollbar mt-5 flex gap-2 overflow-x-auto pb-1">
