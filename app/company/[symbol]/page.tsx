@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getCompany, Metric, METRIC_META } from "@/lib/data";
+import {
+  getCompany,
+  Metric,
+  METRIC_META,
+  ValMetric,
+  VAL_META,
+  valValue,
+  fmtVal,
+} from "@/lib/data";
 import { useQuotes } from "@/lib/useQuotes";
 import { usd, pct, changeColor, usdB, gw } from "@/lib/format";
 import CompareChart from "@/components/charts/CompareChart";
@@ -167,6 +175,30 @@ export default function CompanyPage() {
             <p className="mt-2 text-[12px] text-toss-gray">💡 {c.arrNote}</p>
           )}
         </div>
+
+        {/* 밸류에이션 배수 */}
+        <section className="mt-5">
+          <h2 className="mb-2 px-1 text-sm font-bold text-toss-grayd">
+            밸류에이션 배수
+          </h2>
+          <div className="grid grid-cols-2 gap-2">
+            {(["perGW", "backlogMult", "ps", "coverage"] as ValMetric[]).map(
+              (m) => (
+                <div
+                  key={m}
+                  className="rounded-2xl bg-white p-3.5 shadow-card"
+                >
+                  <p className="text-[11px] text-toss-gray">
+                    {VAL_META[m].label}
+                  </p>
+                  <p className="tnum mt-0.5 text-[17px] font-extrabold text-toss-ink">
+                    {fmtVal(valValue(c, m), m)}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+        </section>
 
         {/* 소개 */}
         <section className="mt-5 rounded-2xl bg-white p-4 shadow-card">

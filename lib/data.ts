@@ -390,3 +390,72 @@ export const METRIC_META: Record<
 };
 
 export const DATA_AS_OF = "2026-06-12";
+
+// =============================================================================
+// 밸류에이션 배수 (현재 스냅샷 기준 계산)
+// 네오클라우드 특화 지표: 전력 1GW당 가치, 수주잔고 대비 시총, 수주 커버리지
+// =============================================================================
+export type ValMetric = "ps" | "backlogMult" | "perGW" | "coverage";
+
+export const VAL_META: Record<
+  ValMetric,
+  {
+    label: string;
+    desc: string;
+    unit: string;
+    decimals: number;
+    lowerBetter: boolean; // true=낮을수록 저평가/매력
+  }
+> = {
+  ps: {
+    label: "P/S (시총/매출)",
+    desc: "매출 대비 시가총액. 낮을수록 매출 기준 저평가.",
+    unit: "x",
+    decimals: 1,
+    lowerBetter: true,
+  },
+  backlogMult: {
+    label: "시총/수주잔고",
+    desc: "확보한 수주잔고 대비 시총. 낮을수록 잔고가 시총보다 큼(매력).",
+    unit: "x",
+    decimals: 2,
+    lowerBetter: true,
+  },
+  perGW: {
+    label: "전력 1GW당 가치",
+    desc: "확보 전력 1GW당 시가총액. 낮을수록 캐파 대비 저평가.",
+    unit: "$B/GW",
+    decimals: 1,
+    lowerBetter: true,
+  },
+  coverage: {
+    label: "수주 커버리지",
+    desc: "수주잔고가 TTM 매출의 몇 배인지(향후 매출 가시성). 높을수록 좋음.",
+    unit: "년분",
+    decimals: 0,
+    lowerBetter: false,
+  },
+};
+
+export function valValue(c: Company, m: ValMetric): number {
+  switch (m) {
+    case "ps":
+      return c.revenueTTM ? c.marketCap / c.revenueTTM : 0;
+    case "backlogMult":
+      return c.backlog ? c.marketCap / c.backlog : 0;
+    case "perGW":
+      return c.powerSecured ? c.marketCap / c.powerSecured : 0;
+    case "coverage":
+      return c.revenueTTM ? c.backlog / c.revenueTTM : 0;
+  }
+}
+
+export function fmtVal(v: number, m: ValMetric): string {
+  const meta = VAL_META[m];
+  const num = v.toFixed(meta.decimals);
+  return meta.unit === "x"
+    ? `${num}x`
+    : meta.unit === "$B/GW"
+    ? `$${num}B/GW`
+    : `${num}${meta.unit}`;
+}

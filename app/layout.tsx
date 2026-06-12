@@ -6,6 +6,16 @@ export const metadata: Metadata = {
   title: "네오클라우드 인사이트",
   description:
     "오라클·코어위브·네비우스·아이렌 등 네오클라우드 기업의 수주잔고·전력 캐파·실시간 뉴스를 한눈에. 투자자를 위한 심플 대시보드.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "네오클라우드",
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {
