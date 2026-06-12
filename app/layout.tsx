@@ -1,0 +1,34 @@
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import BottomNav from "@/components/BottomNav";
+
+export const metadata: Metadata = {
+  title: "네오클라우드 인사이트",
+  description:
+    "오라클·코어위브·네비우스·아이렌 등 네오클라우드 기업의 수주잔고·전력 캐파·실시간 뉴스를 한눈에. 투자자를 위한 심플 대시보드.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#F2F4F6",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="ko">
+      <body className="font-sans">
+        {/* 모바일 우선: 가운데 정렬된 폰 폭 컨테이너 */}
+        <div className="mx-auto min-h-screen w-full max-w-[480px] bg-toss-bg pb-24">
+          {children}
+        </div>
+        <BottomNav />
+      </body>
+    </html>
+  );
+}

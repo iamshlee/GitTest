@@ -1,0 +1,57 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: #f2f4f6;
+  color: #191f28;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 숫자 폭 일정하게 (지표 정렬) */
+.tnum {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* 가로 스크롤 영역 스크롤바 숨김 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 부드러운 등장 애니메이션 */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-up {
+  animation: fadeUp 0.35s ease both;
+}
+
+/* 활성 탭 눌림 효과 */
+.press:active {
+  transform: scale(0.97);
+  transition: transform 0.08s;
+}
