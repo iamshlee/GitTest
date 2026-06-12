@@ -14,7 +14,7 @@ export default function BottomNav() {
   const pathname = usePathname();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50">
-      <div className="mx-auto max-w-[480px] border-t border-toss-line bg-white/90 backdrop-blur">
+      <div className="mx-auto max-w-[480px] border-t border-toss-line bg-toss-card/90 backdrop-blur">
         <ul className="flex items-stretch justify-around px-2 pb-[env(safe-area-inset-bottom)] pt-2">
           {TABS.map((t) => {
             const active =

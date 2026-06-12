@@ -51,13 +51,13 @@ export default function CompanyPage() {
       <div className="sticky top-0 z-10 flex items-center justify-between bg-toss-bg/90 px-2 py-2 backdrop-blur">
         <button
           onClick={() => router.back()}
-          className="press grid h-9 w-9 place-items-center rounded-full"
+          className="press grid h-9 w-9 place-items-center rounded-full text-toss-ink"
           aria-label="뒤로"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <path
               d="M15 5l-7 7 7 7"
-              stroke="#191F28"
+              stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -127,7 +127,7 @@ export default function CompanyPage() {
           {c.tags.map((t) => (
             <span
               key={t}
-              className="rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-toss-grayd shadow-card"
+              className="rounded-full bg-toss-card px-2.5 py-1 text-[11px] font-medium text-toss-grayd shadow-card"
             >
               #{t}
             </span>
@@ -156,7 +156,7 @@ export default function CompanyPage() {
         </div>
 
         {/* 가동률 게이지 */}
-        <div className="mt-3 rounded-2xl bg-white p-4 shadow-card">
+        <div className="mt-3 rounded-2xl bg-toss-card p-4 shadow-card">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-semibold text-toss-grayd">
               용량 가동률
@@ -186,7 +186,7 @@ export default function CompanyPage() {
               (m) => (
                 <div
                   key={m}
-                  className="rounded-2xl bg-white p-3.5 shadow-card"
+                  className="rounded-2xl bg-toss-card p-3.5 shadow-card"
                 >
                   <p className="text-[11px] text-toss-gray">
                     {VAL_META[m].label}
@@ -201,7 +201,7 @@ export default function CompanyPage() {
         </section>
 
         {/* 소개 */}
-        <section className="mt-5 rounded-2xl bg-white p-4 shadow-card">
+        <section className="mt-5 rounded-2xl bg-toss-card p-4 shadow-card">
           <h2 className="mb-1.5 text-sm font-bold text-toss-grayd">회사 소개</h2>
           <p className="text-[13px] leading-relaxed text-toss-grayd">
             {c.about}
@@ -216,7 +216,7 @@ export default function CompanyPage() {
         <section className="mt-5">
           <div className="mb-2 flex items-center justify-between px-1">
             <h2 className="text-sm font-bold text-toss-grayd">분기별 추이</h2>
-            <div className="flex gap-1 rounded-full bg-white p-0.5 shadow-card">
+            <div className="flex gap-1 rounded-full bg-toss-card p-0.5 shadow-card">
               {METRICS.map((m) => (
                 <button
                   key={m}
@@ -248,7 +248,7 @@ export default function CompanyPage() {
             {c.keyCustomers.map((k) => (
               <span
                 key={k}
-                className="rounded-xl bg-white px-3 py-1.5 text-[13px] font-semibold text-toss-ink shadow-card"
+                className="rounded-xl bg-toss-card px-3 py-1.5 text-[13px] font-semibold text-toss-ink shadow-card"
               >
                 {k}
               </span>
@@ -261,7 +261,7 @@ export default function CompanyPage() {
           <h2 className="mb-2 px-1 text-sm font-bold text-toss-grayd">
             데이터 출처
           </h2>
-          <div className="space-y-2 rounded-2xl bg-white p-3.5 shadow-card">
+          <div className="space-y-2 rounded-2xl bg-toss-card p-3.5 shadow-card">
             {c.sources.map((s) => (
               <a
                 key={s.url}
@@ -305,7 +305,7 @@ function Stat({
   return (
     <div
       className={`rounded-2xl p-3.5 shadow-card ${
-        highlight ? "bg-brand-light" : "bg-white"
+        highlight ? "bg-brand-light" : "bg-toss-card"
       }`}
     >
       <p className="text-[12px] text-toss-gray">{label}</p>
@@ -340,7 +340,7 @@ function PointCard({
   color: string;
 }) {
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-card">
+    <div className="rounded-2xl bg-toss-card p-4 shadow-card">
       <h3 className="mb-2 text-sm font-bold text-toss-ink">{title}</h3>
       <ul className="space-y-1.5">
         {items.map((it, i) => (

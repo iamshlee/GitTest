@@ -22,7 +22,7 @@ export default function WatchlistPage() {
       </header>
 
       {items.length === 0 ? (
-        <div className="mt-6 rounded-2xl bg-white p-8 text-center shadow-card">
+        <div className="mt-6 rounded-2xl bg-toss-card p-8 text-center shadow-card">
           <div className="mb-3 text-4xl">⭐️</div>
           <p className="text-sm font-semibold text-toss-ink">
             아직 관심종목이 없어요

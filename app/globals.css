@@ -6,14 +6,33 @@
 
 :root {
   color-scheme: light;
+  --bg: #f2f4f6;
+  --card: #ffffff;
+  --line: #eaecef;
+  --ink: #191f28;
+  --grayd: #4e5968;
+  --gray: #8b95a1;
+  --brand-light: #e8f2ff;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1116;
+  --card: #181c22;
+  --line: #2a2f37;
+  --ink: #f1f4f8;
+  --grayd: #c2c9d2;
+  --gray: #8b95a1;
+  --brand-light: rgba(49, 130, 246, 0.16);
 }
 
 html,
 body {
-  background: #f2f4f6;
-  color: #191f28;
+  background: var(--bg);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 * {

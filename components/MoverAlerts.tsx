@@ -51,7 +51,7 @@ export default function MoverAlerts({
             </span>
           )}
         </h2>
-        <div className="flex gap-1 rounded-full bg-white p-0.5 shadow-card">
+        <div className="flex gap-1 rounded-full bg-toss-card p-0.5 shadow-card">
           {OPTIONS.map((v) => (
             <button
               key={v}
@@ -67,7 +67,7 @@ export default function MoverAlerts({
       </div>
 
       {movers.length === 0 ? (
-        <div className="rounded-2xl bg-white p-3.5 text-[13px] text-toss-gray shadow-card">
+        <div className="rounded-2xl bg-toss-card p-3.5 text-[13px] text-toss-gray shadow-card">
           ±{threshold}% 이상 움직인 종목이 없어요. 조용한 장세입니다.
         </div>
       ) : (
@@ -76,7 +76,7 @@ export default function MoverAlerts({
             <Link
               key={c.symbol}
               href={`/company/${c.symbol}`}
-              className="press flex w-[140px] shrink-0 flex-col gap-1 rounded-2xl bg-white p-3 shadow-card"
+              className="press flex w-[140px] shrink-0 flex-col gap-1 rounded-2xl bg-toss-card p-3 shadow-card"
             >
               <div className="flex items-center gap-1.5">
                 <span

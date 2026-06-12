@@ -13,18 +13,19 @@ const config: Config = {
         brand: {
           DEFAULT: "#3182F6",
           dark: "#1B64DA",
-          light: "#E8F2FF",
+          light: "var(--brand-light)",
         },
         // 한국 증시 관례: 상승=빨강, 하락=파랑
         up: "#F04452",
         down: "#3182F6",
+        // CSS 변수 기반 → 다크모드 자동 전환
         toss: {
-          bg: "#F2F4F6",
-          card: "#FFFFFF",
-          line: "#EAECEF",
-          gray: "#8B95A1",
-          grayd: "#4E5968",
-          ink: "#191F28",
+          bg: "var(--bg)",
+          card: "var(--card)",
+          line: "var(--line)",
+          gray: "var(--gray)",
+          grayd: "var(--grayd)",
+          ink: "var(--ink)",
         },
       },
       fontFamily: {

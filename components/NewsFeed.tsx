@@ -47,7 +47,7 @@ export default function NewsFeed({
     return (
       <div className="space-y-2">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-16 animate-pulse rounded-2xl bg-white/70" />
+          <div key={i} className="h-16 animate-pulse rounded-2xl bg-toss-card/70" />
         ))}
       </div>
     );
@@ -55,7 +55,7 @@ export default function NewsFeed({
 
   if (state === "error") {
     return (
-      <div className="rounded-2xl bg-white p-4 text-sm text-toss-gray shadow-card">
+      <div className="rounded-2xl bg-toss-card p-4 text-sm text-toss-gray shadow-card">
         실시간 뉴스를 불러오지 못했어요. 네트워크 환경(외부망 허용)을 확인해
         주세요. 로컬·배포 환경에서는 Google News에서 자동으로 검색됩니다.
       </div>
@@ -64,7 +64,7 @@ export default function NewsFeed({
 
   if (state === "empty") {
     return (
-      <div className="rounded-2xl bg-white p-4 text-sm text-toss-gray shadow-card">
+      <div className="rounded-2xl bg-toss-card p-4 text-sm text-toss-gray shadow-card">
         관련 뉴스를 찾지 못했어요.
       </div>
     );
@@ -78,7 +78,7 @@ export default function NewsFeed({
             href={n.link}
             target="_blank"
             rel="noreferrer"
-            className="press block rounded-2xl bg-white p-3.5 shadow-card"
+            className="press block rounded-2xl bg-toss-card p-3.5 shadow-card"
           >
             <p className="text-[14px] font-semibold leading-snug text-toss-ink">
               {n.title}

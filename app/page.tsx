@@ -6,6 +6,7 @@ import { useQuotes } from "@/lib/useQuotes";
 import { usdB, gw, pct } from "@/lib/format";
 import CompanyCard from "@/components/CompanyCard";
 import MoverAlerts from "@/components/MoverAlerts";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type Sort = "change" | "backlog" | "capacity";
 
@@ -51,12 +52,15 @@ export default function HomePage() {
             AI 인프라 투자, 한눈에 · {DATA_AS_OF} 기준
           </p>
         </div>
-        <div
-          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-            live ? "bg-up/10 text-up" : "bg-toss-line text-toss-gray"
-          }`}
-        >
-          {live ? "● 실시간" : "○ 샘플가"}
+        <div className="flex items-center gap-2">
+          <div
+            className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+              live ? "bg-up/10 text-up" : "bg-toss-line text-toss-gray"
+            }`}
+          >
+            {live ? "● 실시간" : "○ 샘플가"}
+          </div>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -96,7 +100,7 @@ export default function HomePage() {
             className={`press shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-semibold ${
               sort === s.key
                 ? "bg-toss-ink text-white"
-                : "bg-white text-toss-grayd shadow-card"
+                : "bg-toss-card text-toss-grayd shadow-card"
             }`}
           >
             {s.label}

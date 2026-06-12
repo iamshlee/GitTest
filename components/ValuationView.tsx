@@ -28,7 +28,7 @@ export default function ValuationView({ companies }: { companies: Company[] }) {
             className={`press shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-semibold ${
               vm === m
                 ? "bg-toss-ink text-white"
-                : "bg-white text-toss-grayd shadow-card"
+                : "bg-toss-card text-toss-grayd shadow-card"
             }`}
           >
             {VAL_META[m].label.split(" ")[0]}
@@ -48,7 +48,7 @@ export default function ValuationView({ companies }: { companies: Company[] }) {
       </div>
 
       {/* 랭킹 */}
-      <div className="mt-3 space-y-2.5 rounded-2xl bg-white p-4 shadow-card">
+      <div className="mt-3 space-y-2.5 rounded-2xl bg-toss-card p-4 shadow-card">
         {ranked.map((c, i) => {
           const val = valValue(c, vm);
           const w = Math.max(6, (val / maxVal) * 100);

@@ -47,7 +47,7 @@ export default function ComparePage() {
             key={m}
             onClick={() => setMode(m)}
             className={`press rounded-full py-2 text-[13px] font-bold transition ${
-              mode === m ? "bg-white text-toss-ink shadow-card" : "text-toss-gray"
+              mode === m ? "bg-toss-card text-toss-ink shadow-card" : "text-toss-gray"
             }`}
           >
             {m === "trend" ? "📈 추이" : "💰 밸류에이션"}
@@ -64,7 +64,7 @@ export default function ComparePage() {
               key={c.symbol}
               onClick={() => toggle(c.symbol)}
               className={`press flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-semibold transition ${
-                on ? "text-white" : "bg-white text-toss-gray shadow-card"
+                on ? "text-white" : "bg-toss-card text-toss-gray shadow-card"
               }`}
               style={on ? { background: c.color } : undefined}
             >
@@ -113,7 +113,7 @@ function TrendView({
   return (
     <div className="fade-up">
       {/* 지표 토글 (3종) */}
-      <div className="mt-3 grid grid-cols-3 gap-1 rounded-2xl bg-white p-1 shadow-card">
+      <div className="mt-3 grid grid-cols-3 gap-1 rounded-2xl bg-toss-card p-1 shadow-card">
         {METRICS.map((m) => (
           <button
             key={m}
@@ -140,7 +140,7 @@ function TrendView({
         <h2 className="mb-2 px-1 text-sm font-bold text-toss-grayd">
           현재 {meta.label} 랭킹
         </h2>
-        <div className="space-y-2.5 rounded-2xl bg-white p-4 shadow-card">
+        <div className="space-y-2.5 rounded-2xl bg-toss-card p-4 shadow-card">
           {ranked.map((c, i) => {
             const val = metricValue(c, metric);
             const w = Math.max(6, (val / maxVal) * 100);

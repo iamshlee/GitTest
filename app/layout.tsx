@@ -31,7 +31,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
+      <head>
+        {/* 페인트 전 테마 적용 (FOUC 방지) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('neocloud:theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="font-sans">
         {/* 모바일 우선: 가운데 정렬된 폰 폭 컨테이너 */}
         <div className="mx-auto min-h-screen w-full max-w-[480px] bg-toss-bg pb-24">

@@ -21,7 +21,7 @@ export default function CompanyCard({
   return (
     <Link
       href={`/company/${c.symbol}`}
-      className="press block rounded-2xl bg-white p-4 shadow-card"
+      className="press block rounded-2xl bg-toss-card p-4 shadow-card"
     >
       <div className="flex items-center gap-3">
         <div

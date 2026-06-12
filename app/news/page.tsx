@@ -67,7 +67,7 @@ function FilterChip({
     <button
       onClick={onClick}
       className={`press shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition ${
-        active ? "text-white" : "bg-white text-toss-grayd shadow-card"
+        active ? "text-white" : "bg-toss-card text-toss-grayd shadow-card"
       }`}
       style={active ? { background: color || "#191F28" } : undefined}
     >
