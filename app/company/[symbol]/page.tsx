@@ -16,6 +16,7 @@ import { usd, pct, changeColor, usdB, gw } from "@/lib/format";
 import CompareChart from "@/components/charts/CompareChart";
 import NewsFeed from "@/components/NewsFeed";
 import WatchlistButton from "@/components/WatchlistButton";
+import NotesCard from "@/components/NotesCard";
 
 const METRICS: Metric[] = ["backlog", "capacity", "revenue"];
 
@@ -198,6 +199,11 @@ export default function CompanyPage() {
               )
             )}
           </div>
+        </section>
+
+        {/* 내 투자 노트 */}
+        <section className="mt-5">
+          <NotesCard symbol={c.symbol} price={price} isPrivate={c.private} />
         </section>
 
         {/* 소개 */}
